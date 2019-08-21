@@ -10,7 +10,10 @@ import com.pinyougou.sellergoods.service.BrandService;
 import entity.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class BrandServiceImpl implements BrandService {
@@ -74,5 +77,20 @@ public class BrandServiceImpl implements BrandService {
         Page<TbBrand> page =(Page<TbBrand>) tbBrandMapper.selectByExample(example);
 
         return new PageResult(page.getTotal(),page.getResult());
+    }
+
+    @Override
+    public List<Map> selectOptionList() {
+        List<Map> list= new ArrayList<Map>();
+        Map<String,String> map=null;
+        List<TbBrand> tbBrands = tbBrandMapper.selectByExample(null);
+        for (TbBrand tbBrand:tbBrands){
+            map=new HashMap();
+            map.put("id", tbBrand.getId().toString());
+            map.put("text", tbBrand.getName());
+            list.add(map);
+        }
+
+        return list;
     }
 }

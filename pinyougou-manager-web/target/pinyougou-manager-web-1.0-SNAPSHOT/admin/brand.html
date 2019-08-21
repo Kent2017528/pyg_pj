@@ -11,95 +11,20 @@
     <link rel="stylesheet" href="../css/style.css">
 	<script src="../plugins/jQuery/jquery-2.2.3.min.js"></script>
     <script src="../plugins/bootstrap/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="../plugins/angularjs/angular.min.js"></script>
+	<script type="text/javascript" src="../plugins/angularjs/angular.min.js"></script>+
+
+	<script type="text/javascript" src="../js/base_pagination.js"></script>
+	<script type="text/javascript" src="../js/service/brandService.js"></script>
+	<script type="text/javascript" src="../js/controller/baseController.js"></script>
+	<script type="text/javascript" src="../js/controller/brandController.js"></script>
+
 
 
 	<!-- 分页组件开始 -->
 	<script src="../plugins/angularjs/pagination.js"></script>
 	<link rel="stylesheet" href="../plugins/angularjs/pagination.css">
 	<!-- 分页组件结束 -->
-	<script>
-		//[]表示是一个数组，里面的内容就是你现在声明的这个模块中需要用到的其他模块
-		var app=angular.module('pinyougou',['pagination']);
-		app.controller('brandController',function ($scope,$http) {
-				$scope.findAll=function () {
-					$http.get('../brand/findAll.do').success(
-							function (response) {
-								$scope.list=response;
-					 }
-					);
-				};
 
-			$scope.paginationConf = {
-				currentPage: 1,
-				totalItems: 10,
-				itemsPerPage: 10,
-				perPageOptions: [10, 20, 30, 40, 50],
-				onChange: function(){
-					$scope.reloadList();
-				}
-			};
-			//刷新列表
-			$scope.reloadList=function(){
-				$scope.findPage( $scope.paginationConf.currentPage ,  $scope.paginationConf.itemsPerPage );
-			};
-			//分页
-			$scope.findPage=function(page,size){
-				$http.get('../brand/findPage.do?page='+page +'&size='+size).success(
-						function(response){
-							$scope.list=response.rows;//显示当前页数据
-							$scope.paginationConf.totalItems=response.total;//更新总记录数
-						}
-				);
-			};
-
-			//新增
-			$scope.save=function () {
-				var method='add';
-				if ($scope.entity.id!=null){
-					method='update';
-				}
-				$http.post('../brand/'+method+'.do',$scope.entity).success(
-						function (response) {
-					if (response.success){
-						$scope.reloadList();
-					} else {
-						alert(response.message)
-					}
-				})
-			};
-			$scope.findOne=function (id) {
-				$http.get('../brand/findOne.do?id='+id).success(
-						function (response) {
-							$scope.entity=response;
-						}
-				)
-			};
-			$scope.selectIds=[];//用户勾选的ID集合
-			//用户勾选复选框
-			$scope.updateSelection=function($event,id){
-				if($event.target.checked){
-					$scope.selectIds.push(id);//push向集合添加元素
-				}else{
-					var index= $scope.selectIds.indexOf(id);//查找值的 位置
-					$scope.selectIds.splice(index,1);//参数1：移除的位置 参数2：移除的个数
-				}
-			}
-
-			$scope.delete=function () {
-				$http.post('../brand/'+delete+'.do?ids='+$scope.selectIds).success(
-						function (response) {
-							if (response.success){
-								$scope.reloadList();
-							} else {
-								alert(response.message)
-							}
-						})
-			};
-
-		});
-
-	</script>
     
 </head>
 <body class="hold-transition skin-red sidebar-mini" ng-app="pinyougou"
@@ -130,8 +55,9 @@
                             </div>
                             <div class="box-tools pull-right">
                                 <div class="has-feedback">
-							                                         
-                                </div>
+									品牌名称:<input ng-model="searchEntity.name"> 品牌首字母:<input ng-model="searchEntity.firstChar">
+									<button  class="btn btn-default" ng-click="reloadList()">查询</button>
+								</div>
                             </div>
                             <!--工具栏/-->
 
