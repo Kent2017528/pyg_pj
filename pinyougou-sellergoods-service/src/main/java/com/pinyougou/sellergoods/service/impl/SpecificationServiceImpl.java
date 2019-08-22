@@ -174,6 +174,7 @@ public class SpecificationServiceImpl implements SpecificationService {
 
 	@Override
 	public List<Map> selectOptionList() {
+
 		List<Map> list= new ArrayList<Map>();
 		Map<String,String> map=null;
 		List<TbSpecification> specifications = specificationMapper.selectByExample(null);

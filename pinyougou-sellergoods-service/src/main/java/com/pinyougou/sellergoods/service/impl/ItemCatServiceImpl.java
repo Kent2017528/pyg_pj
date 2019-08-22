@@ -1,4 +1,5 @@
 package com.pinyougou.sellergoods.service.impl;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.alibaba.dubbo.config.annotation.Service;
@@ -13,7 +14,7 @@ import com.pinyougou.sellergoods.service.ItemCatService;
 import entity.PageResult;
 
 /**
- * 服务实现层
+ * 商品列表服务实现层
  * @author Administrator
  *
  */
@@ -72,11 +73,18 @@ public class ItemCatServiceImpl implements ItemCatService {
 	 * 批量删除
 	 */
 	@Override
-	public void delete(Long[] ids) {
-		for(Long id:ids){
-			itemCatMapper.deleteByPrimaryKey(id);
-		}		
+	public void delete(Long[] ids)  {
+
+
+		for (Long id : ids) {
+			System.out.println("----------------------"+id);
+			List<TbItemCat> list = findByParentId(id);
+			if (list==null||list.size()==0){
+					itemCatMapper.deleteByPrimaryKey(id);
+			}
+		}
 	}
+
 	
 	
 		@Override
@@ -96,5 +104,12 @@ public class ItemCatServiceImpl implements ItemCatService {
 		Page<TbItemCat> page= (Page<TbItemCat>)itemCatMapper.selectByExample(example);		
 		return new PageResult(page.getTotal(), page.getResult());
 	}
-	
+
+	@Override
+	public List<TbItemCat> findByParentId(long parentId) {
+		TbItemCatExample example=new TbItemCatExample();
+		Criteria criteria = example.createCriteria();
+		criteria.andParentIdEqualTo(parentId);
+		return  itemCatMapper.selectByExample(example);
+	}
 }
