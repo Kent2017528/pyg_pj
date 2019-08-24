@@ -77,7 +77,8 @@ public class ItemCatServiceImpl implements ItemCatService {
 
 
 		for (Long id : ids) {
-			System.out.println("----------------------"+id);
+		   //判断有没有parent_id等于这个id，如果list返回是空或者长度为0，就是这个id分类下面没有分类了
+			//如果list返回的长度大于0，就是这个id分类下面还有分类了，所有不能删除
 			List<TbItemCat> list = findByParentId(id);
 			if (list==null||list.size()==0){
 					itemCatMapper.deleteByPrimaryKey(id);

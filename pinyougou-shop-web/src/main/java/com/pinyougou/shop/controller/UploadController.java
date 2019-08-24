@@ -22,7 +22,7 @@ public class UploadController {
         try {
             FastDFSClient client = new FastDFSClient("classpath:config/fdfs_client.conf");
             String path = client.uploadFile(file.getBytes(), exName);
-            String url=path+FILE_SERVER_URL;
+            String url=FILE_SERVER_URL+path;
             return new Result(true,url);
         } catch (Exception e) {
             e.printStackTrace();
