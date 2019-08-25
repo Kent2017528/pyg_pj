@@ -115,6 +115,7 @@ public class GoodsServiceImpl implements GoodsService {
 		Long brandId = tbGoods.getBrandId();
 		TbBrand tbBrand = brandMapper.selectByPrimaryKey(brandId);
 		String brandName = tbBrand.getName();
+		item.setGoodsId(tbGoods.getId());
 
 		//插入图片地址
 		String itemImages = tbGoodsDesc.getItemImages();
@@ -148,8 +149,21 @@ public class GoodsServiceImpl implements GoodsService {
 	 * 修改
 	 */
 	@Override
-	public void update(TbGoods goods){
-		goodsMapper.updateByPrimaryKey(goods);
+	public void update(Goods goods){
+		TbGoods tbGoods = goods.getGoods();
+		TbGoodsDesc goodsDesc = goods.getGoodsDesc();
+		goodsMapper.updateByPrimaryKey(tbGoods);
+		tbGoodsDescMapper.updateByPrimaryKey(goodsDesc);
+
+		//删除
+		TbItemExample example=new TbItemExample();
+		example.createCriteria().andGoodsIdEqualTo(tbGoods.getId());
+		itemMapper.deleteByExample(example);
+
+		//插入
+		List<TbItem> itemList = goods.getItemList();
+
+
 	}	
 	
 	/**
@@ -158,8 +172,19 @@ public class GoodsServiceImpl implements GoodsService {
 	 * @return
 	 */
 	@Override
-	public TbGoods findOne(Long id){
-		return goodsMapper.selectByPrimaryKey(id);
+	public Goods findOne(Long id){
+		Goods goods=new Goods();
+		TbGoods tbGoods = goodsMapper.selectByPrimaryKey(id);
+		TbGoodsDesc tbGoodsDesc = tbGoodsDescMapper.selectByPrimaryKey(id);
+		goods.setGoods(tbGoods);
+		goods.setGoodsDesc(tbGoodsDesc);
+
+		TbItemExample example=new TbItemExample();
+		example.createCriteria().andGoodsIdEqualTo(id);
+		List<TbItem> items = itemMapper.selectByExample(example);
+		goods.setItemList(items);
+
+		return goods;
 	}
 
 	/**
