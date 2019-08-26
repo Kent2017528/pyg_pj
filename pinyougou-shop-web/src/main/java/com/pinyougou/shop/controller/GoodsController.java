@@ -70,7 +70,23 @@ public class GoodsController {
 	 * @return
 	 */
 	@RequestMapping("/update")
-	public Result update(@RequestBody TbGoods goods){
+	public Result update(@RequestBody Goods goods){
+
+
+		Goods findGoods = goodsService.findOne(goods.getGoods().getId());
+		String findGoodsId= findGoods.getGoods().getSellerId();
+
+
+
+		String sellerId = SecurityContextHolder.getContext()
+				.getAuthentication().getName();
+
+		if(!findGoodsId.equals(sellerId)||
+				!goods.getGoods().getSellerId().equals(sellerId)){
+			return new Result(false, "操作非法");
+		}
+
+
 		try {
 			goodsService.update(goods);
 			return new Result(true, "修改成功");
@@ -86,7 +102,8 @@ public class GoodsController {
 	 * @return
 	 */
 	@RequestMapping("/findOne")
-	public TbGoods findOne(Long id){
+	public Goods findOne(Long id){
+
 		return goodsService.findOne(id);		
 	}
 	
