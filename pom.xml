@@ -22,6 +22,8 @@
         <module>pinyougou-portal-web</module>
         <module>pinyougou-solr-util</module>
         <module>pinyougou-search-interface</module>
+        <module>pinyougou-search-service</module>
+        <module>com-pinyougou-search-web</module>
     </modules>
 
 

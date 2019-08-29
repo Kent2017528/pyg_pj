@@ -1,6 +1,8 @@
 package com.pinyougou.sellergoods.service.impl;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.pinyougou.pojo.TbItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.github.pagehelper.Page;
@@ -12,6 +14,7 @@ import com.pinyougou.pojo.TbItemCatExample.Criteria;
 import com.pinyougou.sellergoods.service.ItemCatService;
 
 import entity.PageResult;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -25,6 +28,8 @@ public class ItemCatServiceImpl implements ItemCatService {
 
 	@Autowired
 	private TbItemCatMapper itemCatMapper;
+	@Autowired
+	private RedisTemplate redisTemplate;
 	
 	/**
 	 * 查询全部
@@ -113,6 +118,14 @@ public class ItemCatServiceImpl implements ItemCatService {
 		TbItemCatExample example=new TbItemCatExample();
 		Criteria criteria = example.createCriteria();
 		criteria.andParentIdEqualTo(parentId);
+
+		List<TbItemCat> itemCats = findAll();
+		for (TbItemCat itemCat:itemCats){
+			redisTemplate.boundHashOps("itemCat").put
+					(itemCat.getName(),itemCat.getTypeId());
+		}
+		System.out.println("更新缓存:商品分类表");
+
 		return  itemCatMapper.selectByExample(example);
 	}
 }

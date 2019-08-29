@@ -17,6 +17,7 @@ import com.pinyougou.pojo.TbTypeTemplateExample.Criteria;
 import com.pinyougou.sellergoods.service.TypeTemplateService;
 
 import entity.PageResult;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -33,6 +34,9 @@ public class TypeTemplateServiceImpl implements TypeTemplateService {
 	private TbTypeTemplateMapper typeTemplateMapper;
 	@Autowired
 	private TbSpecificationOptionMapper specificationOptionMapper;
+	@Autowired
+	private RedisTemplate redisTemplate;
+
 	/**
 	 * 查询全部
 	 */
@@ -91,31 +95,46 @@ public class TypeTemplateServiceImpl implements TypeTemplateService {
 	
 		@Override
 	public PageResult findPage(TbTypeTemplate typeTemplate, int pageNum, int pageSize) {
-		PageHelper.startPage(pageNum, pageSize);
-		
-		TbTypeTemplateExample example=new TbTypeTemplateExample();
-		Criteria criteria = example.createCriteria();
-		
-		if(typeTemplate!=null){			
-						if(typeTemplate.getName()!=null && typeTemplate.getName().length()>0){
-				criteria.andNameLike("%"+typeTemplate.getName()+"%");
+			PageHelper.startPage(pageNum, pageSize);
+
+			TbTypeTemplateExample example=new TbTypeTemplateExample();
+			Criteria criteria = example.createCriteria();
+
+			if(typeTemplate!=null){
+				if(typeTemplate.getName()!=null && typeTemplate.getName().length()>0){
+					criteria.andNameLike("%"+typeTemplate.getName()+"%");
+				}
+				if(typeTemplate.getSpecIds()!=null && typeTemplate.getSpecIds().length()>0){
+					criteria.andSpecIdsLike("%"+typeTemplate.getSpecIds()+"%");
+				}
+				if(typeTemplate.getBrandIds()!=null && typeTemplate.getBrandIds().length()>0){
+					criteria.andBrandIdsLike("%"+typeTemplate.getBrandIds()+"%");
+				}
+				if(typeTemplate.getCustomAttributeItems()!=null && typeTemplate.getCustomAttributeItems().length()>0){
+					criteria.andCustomAttributeItemsLike("%"+typeTemplate.getCustomAttributeItems()+"%");
+				}
 			}
-			if(typeTemplate.getSpecIds()!=null && typeTemplate.getSpecIds().length()>0){
-				criteria.andSpecIdsLike("%"+typeTemplate.getSpecIds()+"%");
-			}
-			if(typeTemplate.getBrandIds()!=null && typeTemplate.getBrandIds().length()>0){
-				criteria.andBrandIdsLike("%"+typeTemplate.getBrandIds()+"%");
-			}
-			if(typeTemplate.getCustomAttributeItems()!=null && typeTemplate.getCustomAttributeItems().length()>0){
-				criteria.andCustomAttributeItemsLike("%"+typeTemplate.getCustomAttributeItems()+"%");
-			}
-	
-		}
-		
-		Page<TbTypeTemplate> page= (Page<TbTypeTemplate>)typeTemplateMapper.selectByExample(example);		
-		return new PageResult(page.getTotal(), page.getResult());
+
+			Page<TbTypeTemplate> page= (Page<TbTypeTemplate>)typeTemplateMapper.selectByExample(example);
+			saveToRedis();
+			return new PageResult(page.getTotal(), page.getResult());
 	}
 
+	/**
+	 * 将数据存入缓存
+	 */
+	private void saveToRedis(){
+		List<TbTypeTemplate> templateList = findAll();
+		for (TbTypeTemplate template:templateList){
+			List<Map> brandList = JSON.parseArray(template.getBrandIds(), Map.class);
+			redisTemplate.boundHashOps("brandList").put(template.getId(),brandList);
+			List<Map> specList = findSpecList(template.getId());//根据模板ID查询规格列表
+			redisTemplate.boundHashOps("specList").put(template.getId(), specList);
+
+		}
+		System.out.println("更新缓存:品牌列表和规格列表");
+
+	}
 	@Override
 	public List<Map> findSpecList(Long id) {
 		TbTypeTemplate typeTemplate = typeTemplateMapper.selectByPrimaryKey(id);
