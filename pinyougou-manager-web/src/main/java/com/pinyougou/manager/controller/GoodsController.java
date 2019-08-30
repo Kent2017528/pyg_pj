@@ -1,7 +1,9 @@
 package com.pinyougou.manager.controller;
 import java.util.List;
 
+import com.pinyougou.pojo.TbItem;
 import com.pinyougou.pojogroup.Goods;
+import com.pinyougou.search.service.ItemSearchService;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +24,8 @@ public class GoodsController {
 
 	@Reference
 	private GoodsService goodsService;
+	@Reference(timeout = 100000)
+	private ItemSearchService itemSearchService;
 	
 	/**
 	 * 返回全部列表
@@ -117,10 +121,20 @@ public class GoodsController {
 	public Result updateAuditStatus(Long[] ids, String status){
 		try {
 			goodsService.updateAuditStatus(ids, status);
-			return new Result(true, "审核成功");
+			if ("1".equals(status)){
+				List<TbItem> list =
+						goodsService.findItemListByGoodsIdandStatus(ids, status);
+				if (list.size()>0){
+					itemSearchService.importList(list);
+				}else {
+					System.out.println("没有明细数据");
+				}
+			}
+
+			return new Result(true, "修改状态成功");
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new Result(true, "审核失败");
+			return new Result(true, "修改状态失败");
 		}
 
 	}

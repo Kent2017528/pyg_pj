@@ -1,4 +1,4 @@
-app.controller('searchController',function($scope,searchService){
+app.controller('searchController',function($scope,searchService,$location){
     //搜索
     $scope.search=function(){
         $scope.searchMap.pageNo= parseInt($scope.searchMap.pageNo) ;
@@ -8,10 +8,10 @@ app.controller('searchController',function($scope,searchService){
                 buildPageLabel();//调用
             }
         );
-    }
+    };
 
     $scope.searchMap={'keywords':'','category':'','brand':'','spec':{},'price':'',
-        'pageNo':1,'pageSize':40};//搜索对象
+        'pageNo':1,'pageSize':40,'sort':'','sortField':''};//搜索对象
 //添加搜索项
     $scope.addSearchItem=function(key,value){
         if(key=='category' || key=='brand' || key=='price'){//如果点击的是分类或者是品牌
@@ -20,7 +20,7 @@ app.controller('searchController',function($scope,searchService){
             $scope.searchMap.spec[key]=value;
         }
         $scope.search();//执行搜索
-    }
+    };
 
     //移除复合搜索条件
     $scope.removeSearchItem=function(key){
@@ -30,7 +30,7 @@ app.controller('searchController',function($scope,searchService){
             delete $scope.searchMap.spec[key];//移除此属性
         }
         $scope.search();//执行搜索
-    }
+    };
 
 
     //构建分页标签(totalPages为总页数)
@@ -68,6 +68,46 @@ app.controller('searchController',function($scope,searchService){
             return;
         }
         $scope.searchMap.pageNo=pageNo;
+        $scope.search();
+    };
+
+    //判断当前页为第一页
+    $scope.isTopPage=function(){
+        if($scope.searchMap.pageNo==1){
+            return true;
+        }else{
+            return false;
+        }
+    };
+
+    //判断当前页是否未最后一页
+    $scope.isEndPage=function(){
+        if($scope.searchMap.pageNo==$scope.resultMap.totalPages){
+            return true;
+        }else{
+            return false;
+        }
+    };
+
+    //设置排序规则
+    $scope.sortSearch=function(sortField,sort){
+        $scope.searchMap.sortField=sortField;
+        $scope.searchMap.sort=sort;
+        $scope.search();
+    };
+
+    //判断关键字是不是品牌
+    $scope.keywordsIsBrand=function(){
+        for(var i=0;i<$scope.resultMap.brandList.length;i++){
+            if($scope.searchMap.keywords.indexOf($scope.resultMap.brandList[i].text)>=0){//如果包含
+                return true;
+            }
+        }
+        return false;
+    };
+    //加载查询字符串
+    $scope.loadkeywords=function(){
+        $scope.searchMap.keywords=  $location.search()['keywords'];
         $scope.search();
     }
 });

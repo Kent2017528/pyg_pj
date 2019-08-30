@@ -5,6 +5,7 @@ import com.pinyougou.pojo.TbItem;
 import com.pinyougou.search.service.ItemSearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.solr.core.SolrTemplate;
 import org.springframework.data.solr.core.query.*;
@@ -26,6 +27,9 @@ public class ItemSearchServiceImpl implements ItemSearchService {
     @Override
     public Map<String, Object> search(Map searchMap) {
         Map<String, Object> map=new HashMap<String, Object>();
+        String keywords =(String) searchMap.get("keywords");
+        searchMap.put("keywords", keywords.replace(" ", ""));
+
         map.putAll(searchList(searchMap));
         List<String> categoryList = searchCategoryList(searchMap);
         map.put("categoryList",categoryList);
@@ -111,6 +115,23 @@ public class ItemSearchServiceImpl implements ItemSearchService {
         if (pageSize==null){
             pageSize=20;
         }
+        //1.7 排序
+        String sortValue =(String) searchMap.get("sort");
+        String sortField =(String)searchMap.get("sortField");
+
+        if (sortValue!=null&&!"".equals(sortValue)) {
+            if (sortValue.equals("ASC")) {
+                Sort sort = new Sort(Sort.Direction.ASC,"item_"+sortField);
+                query.addSort(sort);
+            }
+            if (sortValue.equals("DESC")) {
+                Sort sort = new Sort(Sort.Direction.DESC,"item_"+sortField);
+                query.addSort(sort);
+            }
+
+        }
+
+
         query.setOffset((pageNo-1)*pageSize);
         query.setRows(pageSize);
         //高亮显示处理
@@ -174,4 +195,9 @@ public class ItemSearchServiceImpl implements ItemSearchService {
         return map;
     }
 
+    @Override
+    public void importList(List list) {
+        solrTemplate.saveBeans(list);
+        solrTemplate.commit();
+    }
 }
