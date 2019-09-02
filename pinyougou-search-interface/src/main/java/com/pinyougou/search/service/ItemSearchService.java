@@ -8,4 +8,5 @@ public interface ItemSearchService {
     public Map<String,Object> search(Map searchMap);
 
     public void importList(List list);
+    public void delete(List ids);
 }
