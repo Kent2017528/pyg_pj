@@ -10,10 +10,10 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.data.solr.core.SolrTemplate;
 import org.springframework.data.solr.core.query.Query;
 import org.springframework.data.solr.core.query.SimpleQuery;
-import org.springframework.jms.core.JmsTemplate;
+
 import org.springframework.stereotype.Component;
 
-import javax.print.attribute.standard.Destination;
+
 import java.util.List;
 import java.util.Map;
 

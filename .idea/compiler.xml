@@ -7,12 +7,16 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="pinyougou-search-service" />
-        <module name="pinyougou-page-web" />
+        <module name="pinyougou-user-service" />
+        <module name="pinyougou-user-web" />
+        <module name="pinyougou-common" />
         <module name="pinyougou-content-service" />
         <module name="pinyougou-sellergoods-interface" />
         <module name="pinyougou-solr-util" />
-        <module name="pinyougou-common" />
+        <module name="pinyougou-page-web" />
         <module name="com-pinyougou-search-web" />
+        <module name="springboot_demo" />
+        <module name="itcast_sms" />
         <module name="pinyougou-manager-web" />
         <module name="pinyougou-page-interface" />
         <module name="pinyougou-sellergoods-service" />
@@ -22,8 +26,15 @@
         <module name="pinyougou-portal-web" />
         <module name="pinyougou-pojo" />
         <module name="pinyougou-search-interface" />
+        <module name="pinyougou-user-interface" />
         <module name="pinyougou-shop-web" />
       </profile>
     </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="itcast_sms" options="-parameters" />
+      <module name="springboot_demo" options="-parameters" />
+    </option>
   </component>
 </project>

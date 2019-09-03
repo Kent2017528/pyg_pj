@@ -12,6 +12,8 @@
     <file type="web" url="file://$PROJECT_DIR$/pinyougou-search-service" />
     <file type="web" url="file://$PROJECT_DIR$/pinyougou-sellergoods-service" />
     <file type="web" url="file://$PROJECT_DIR$/pinyougou-shop-web" />
+    <file type="web" url="file://$PROJECT_DIR$/pinyougou-user-service" />
+    <file type="web" url="file://$PROJECT_DIR$/pinyougou-user-web" />
   </component>
   <component name="JavaScriptSettings">
     <option name="languageLevel" value="ES6" />
@@ -20,6 +22,8 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/itcast_sms/pom.xml" />
+        <option value="$PROJECT_DIR$/springboot_demo/pom.xml" />
       </list>
     </option>
   </component>
