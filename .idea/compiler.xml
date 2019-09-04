@@ -11,13 +11,12 @@
         <module name="pinyougou-user-web" />
         <module name="pinyougou-common" />
         <module name="pinyougou-content-service" />
-        <module name="pinyougou-sellergoods-interface" />
-        <module name="pinyougou-solr-util" />
-        <module name="pinyougou-page-web" />
         <module name="com-pinyougou-search-web" />
+        <module name="pinyougou-solr-util" />
         <module name="springboot_demo" />
-        <module name="itcast_sms" />
         <module name="pinyougou-manager-web" />
+        <module name="pinyougou-page-web" />
+        <module name="itcast_sms" />
         <module name="pinyougou-page-interface" />
         <module name="pinyougou-sellergoods-service" />
         <module name="pinyougou-content-interface" />
@@ -25,6 +24,7 @@
         <module name="pinyougou-dao" />
         <module name="pinyougou-portal-web" />
         <module name="pinyougou-pojo" />
+        <module name="pinyougou-sellergoods-interface" />
         <module name="pinyougou-search-interface" />
         <module name="pinyougou-user-interface" />
         <module name="pinyougou-shop-web" />
