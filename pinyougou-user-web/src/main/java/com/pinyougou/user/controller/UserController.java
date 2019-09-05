@@ -43,29 +43,7 @@ public class UserController {
 		return userService.findPage(page, rows);
 	}
 	
-	/**
-	 * 增加
-	 * @param user
-	 * @return
-	 */
-	@RequestMapping("/add")
-	public Result add(@RequestBody TbUser user,String smscode){
-		boolean checkSmsCode = userService.checkSmsCode(user.getPhone(), smscode);
-		System.out.println(user.getPhone()+"--------"+smscode);
-		if (checkSmsCode==false){
-			return new Result(false, "验证码输入错误！");
-		}
 
-
-		try {
-			userService.add(user);
-			return new Result(true, "增加成功");
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new Result(false, "增加失败");
-		}
-	}
-	
 	/**
 	 * 修改
 	 * @param user
@@ -119,6 +97,29 @@ public class UserController {
 	public PageResult search(@RequestBody TbUser user, int page, int rows  ){
 		return userService.findPage(user, page, rows);		
 	}
+	/**
+	 * 增加
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping("/add")
+	public Result add(@RequestBody TbUser user,String smscode){
+		boolean checkSmsCode = userService.checkSmsCode(user.getPhone(), smscode);
+		System.out.println(user.getPhone()+"--------"+smscode);
+		if (checkSmsCode==false){
+			return new Result(false, "验证码输入错误！");
+		}
+
+
+		try {
+			userService.add(user);
+			return new Result(true, "增加成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new Result(false, "增加失败");
+		}
+	}
+
 
 	/**
 	 *
